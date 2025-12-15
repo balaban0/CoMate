@@ -6,18 +6,11 @@ const path = require('path');
 
 const app = express();
 const port = 3000;
-const db = new Database('dating.db');
-
-// Mock Code Names
-const CODENAMES = [
-    "Ketçap", "Mayonez", "Hardal", "Turşu", "Burger", "Pizza", "Tako", "Suşi",
-    "Makarna", "Salata", "Kola", "Fanta", "Gazoz", "Çay", "Kahve", "Ayran",
-    "Kebap", "Döner", "Lahmacun", "Pide", "Simit", "Boyoz", "Kumru", "Çiğköfte"
-];
+const db = new Database('Codate.db');
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public')); // Serve static frontend files
+app.use(express.static('public')); 
 
 // Initialize Schema
 db.exec(`
@@ -210,7 +203,7 @@ WHERE(m.user_a_id = ? OR m.user_b_id = ?) AND m.status != 'expired'
 
 // 4. Batch Match (Admin Triggered)
 app.post('/api/batch-match', (req, res) => {
-    // Adım 1: Aday Havuzunu Çekme (matched_with IS NULL)
+    // Get user pool (matched_with IS NULL)
     const candidates = db.prepare(`SELECT * FROM users WHERE matched_with IS NULL`).all();
     console.log(`Batch Match Triggered.Found ${candidates.length} candidates.`);
 
@@ -218,14 +211,14 @@ app.post('/api/batch-match', (req, res) => {
         return res.json({ success: false, message: `Yeterli aday yok. (Bulunan: ${candidates.length})` });
     }
 
-    // Adım 2: Uyumluluk Matrisini Oluşturma
+    // Setting up the match matrixes
     let potentialMatches = [];
     for (let i = 0; i < candidates.length; i++) {
         for (let j = i + 1; j < candidates.length; j++) {
             const u1 = candidates[i];
             const u2 = candidates[j];
 
-            // Puanlama (10 soru veya mevcut tüm sorular)
+            // Calculating Scores
             let score = 0;
             try {
                 const v1 = JSON.parse(u1.vibe_answers).quiz || {};
@@ -240,24 +233,24 @@ app.post('/api/batch-match', (req, res) => {
         }
     }
 
-    // Adım 3: En Yüksek Toplam Puanlı Eşleşmeleri Bulma (Global Optimizasyon - Greedy)
-    // Sıralama: Puanlarına göre büyükten küçüğe
+    // Global Optimizasyon - Greedy
+    // Big to small 
     potentialMatches.sort((a, b) => b.score - a.score);
 
-    // Eşleştirme Seçimi
+    // Matching
     let matchedIds = new Set();
     let matchesCreated = [];
 
     const makeMatches = db.transaction((matches) => {
         for (const pair of matches) {
             if (!matchedIds.has(pair.u1.id) && !matchedIds.has(pair.u2.id)) {
-                // Adım 4: Veritabanı İşlemi (Transaction)
+                // Transaction
 
-                // Kullanıcı Güncelleme: matched_with alanını güncelle
+                // Update user
                 db.prepare('UPDATE users SET matched_with = ? WHERE id = ?').run(pair.u2.id, pair.u1.id);
                 db.prepare('UPDATE users SET matched_with = ? WHERE id = ?').run(pair.u1.id, pair.u2.id);
 
-                // Maç Kaydı: status: 'verified' olarak ekle
+                // Match conceded: status: 'verified'
                 db.prepare(`
                     INSERT INTO matches(user_a_id, user_b_id, status)
 VALUES(?, ?, 'verified')
@@ -292,7 +285,7 @@ VALUES(?, ?, 'verified')
     });
 });
 
-// 5. Delete User (Leave Queue)
+// 5. Delete User /Leave Queue
 app.post('/api/delete-user', (req, res) => {
     const { userId } = req.body;
     if (!userId) return res.json({ success: false });
@@ -307,7 +300,7 @@ app.post('/api/delete-user', (req, res) => {
     res.json({ success: true });
 });
 
-// 6. Verify (Guess Partner ID)
+// 6. Verify / Guess Partner ID
 app.post('/api/verify', (req, res) => {
     const { userId, code } = req.body; // code is the GUESSED ID
     const guessedId = Number(code);
@@ -327,28 +320,28 @@ app.post('/api/verify', (req, res) => {
     }
 
     const isUserA = match.user_a_id == userId;
-    // We want to verify if the code matches the PARTNER'S display ID
+    // verify if the code matches the partners' display ID
     const partnerDisplayId = isUserA ? match.u2_did : match.u1_did;
 
     console.log(`[VERIFY] Match Found. User is ${isUserA ? 'A' : 'B'}. Partner Display ID: ${partnerDisplayId} (Type: ${typeof partnerDisplayId}). Submitted Code: ${code} (Type: ${typeof code})`);
 
-    // Robust comparison: Convert both to string and trim
+    // To avoid int str collision convert bot to string and trim
     const codeStr = String(code).trim();
     const partnerStr = String(partnerDisplayId).trim();
 
     if (codeStr === partnerStr) {
-        // Correct Guess!
+        // correct guess
         console.log(`[VERIFY] Success!`);
         res.json({ success: true });
     } else {
         console.log(`[VERIFY] Failed. '${codeStr}' !== '${partnerStr}'`);
-        // DEBUG: Revealing the expected ID in the error message for the user to troubleshoot
+        // Reveal the entered id to debug
         res.json({ success: false, message: `Yanlış ID! Girilen: '${codeStr}'` });
     }
 });
 
-// 7. Questions API
-// GET all
+// 7.Questions API
+// get all
 app.get('/api/questions', (req, res) => {
     const questions = db.prepare('SELECT * FROM questions ORDER BY sort_order ASC').all();
     // Parse options JSON
@@ -359,7 +352,7 @@ app.get('/api/questions', (req, res) => {
     res.json(parsed);
 });
 
-// CREATE
+// create
 app.post('/api/admin/questions', (req, res) => {
     const { short_id, text, options, sort_order } = req.body;
     try {
@@ -371,7 +364,7 @@ app.post('/api/admin/questions', (req, res) => {
     }
 });
 
-// UPDATE
+// update
 app.put('/api/admin/questions/:id', (req, res) => {
     const { id } = req.params;
     const { short_id, text, options, sort_order } = req.body;
@@ -384,7 +377,7 @@ app.put('/api/admin/questions/:id', (req, res) => {
     }
 });
 
-// DELETE
+// delete
 app.delete('/api/admin/questions/:id', (req, res) => {
     const { id } = req.params;
     try {
@@ -398,3 +391,4 @@ app.delete('/api/admin/questions/:id', (req, res) => {
 app.listen(port, '0.0.0.0', () => {
     console.log(`CoDate running at http://localhost:${port}`);
 });
+
