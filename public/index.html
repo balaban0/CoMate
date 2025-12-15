@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoDate</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="table.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">CoDate <span class="accent">Beta</span></div>
+            <div id="user-display" class="hidden"></div>
+        </header>
+
+        <!-- SECTION: REGISTER (WIZARD) -->
+        <section id="section-register" class="active">
+            <h1>Kimliğin Gizli.<br>Vibe'ın Ortada.</h1>
+            <p class="subtitle">Sosyal deneye katıl. Vibe'ını belirlemek için soruları cevapla.</p>
+
+            <form id="registerForm">
+                <!-- STEP 1: HANDLE -->
+                <div id="step-handle" class="wizard-step">
+                    <div class="input-group">
+                        <label>Kullanıcı Adın (Rumuz)</label>
+                        <input type="text" id="reg-handle" placeholder="@mrrobot" required>
+                    </div>
+                    <button type="button" id="btn-start-quiz" class="btn-primary">Vibe Check Başlat</button>
+                </div>
+
+                <!-- STEP 2: QUIZ LOOP -->
+                <div id="step-quiz" class="wizard-step hidden">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-progress"></div>
+                    </div>
+                    <h2 id="quiz-question-text">Soru Metni</h2>
+                    <div id="quiz-options" class="options-grid">
+                        <!-- Options injected by JS -->
+                    </div>
+                </div>
+
+                <!-- STEP 3: MATCH QUESTION -->
+                <div id="step-match-question" class="wizard-step hidden">
+                    <h2>Son Dokunuş</h2>
+                    <p>Eşleşmen için bir ipucu sorusu seç ve cevapla.</p>
+
+                    <div class="input-group text-left">
+                        <label class="text-xs ml-1 opacity-70">Sorun (Örn: En sevdiğim film tarzı? En sevdiğim
+                            hobi?)</label>
+                        <input type="text" id="reg-match-question-input"
+                            class="w-full p-3 bg-white/5 border border-white/10 rounded-lg mb-4 text-white focus:outline-none focus:border-accent"
+                            maxlength="50" required placeholder="Sorunu buraya yaz...">
+
+                        <label class="text-xs ml-1 opacity-70">Cevabın</label>
+                        <input type="text" id="reg-match-answer" class="text-center text-xl tracking-wide"
+                            maxlength="30" required placeholder="Cevabını yaz...">
+                    </div>
+
+                    <button type="submit" class="btn-primary">Kimliğini Al</button>
+                    <!-- Back Button -->
+                    <button type="button" class="btn-secondary-outline mt-2 text-sm opacity-50"
+                        onclick="ui.showStep('step-quiz')">← Geri</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- SECTION: DASHBOARD -->
+        <section id="section-dashboard" class="hidden">
+            <div class="card glass">
+                <h2>Gizli Kimliğin</h2>
+
+                <!-- Code Name & ID Display -->
+                <div class="mt-4 p-4 bg-white/5 rounded-lg border border-white/10">
+                    <div id="my-codename-label" class="text-xs text-secondary uppercase tracking-widest mb-1">KULLANICI
+                        ADI
+                    </div>
+                    <div id="display-handle" class="text-4xl font-black text-accent tracking-tighter glitch-text">
+                    </div>
+                    <div id="my-id-display" class="text-sm font-mono opacity-50 mt-1">ID: #---</div>
+                </div>
+
+                <p class="mt-4 text-sm opacity-60">Eşleştiğin kişi seni ipucu sorunu ve cevabını görecek.</p>
+            </div>
+
+            <div class="status-area">
+                <p id="match-status-text">Vibe Shift Bekleniyor...<br><span
+                        style="font-size: 0.8em; opacity: 0.7;">Admin'in eşleşmeleri başlatmasını bekle.</span></p>
+
+                <button id="btn-leave-queue" type="button" class="btn-secondary mt-4 text-xs"
+                    onclick="app.leaveQueue()">Cevaplarını
+                    değiştirmek ister misin?</button>
+            </div>
+
+            <!-- MATCH REVEAL CARD -->
+            <div id="match-reveal" class="card glass hidden animate-pop-in border-2 border-accent">
+                <h2 class="text-3xl mb-2">EŞLEŞME BULUNDU!</h2>
+
+                <div class="p-4 bg-black/40 rounded-lg mb-4 text-left">
+                    <!-- Partner ID Removed -->
+
+                    <div class="text-xs text-gray-400 mb-1">İPUCU SORUSU</div>
+                    <div id="partner-question-label" class="text-sm text-accent mb-1 font-bold">???</div>
+
+                    <div class="text-xs text-gray-400 mb-1">CEVABI</div>
+                    <div id="partner-answer" class="text-xl text-white italic">"..."</div>
+                </div>
+
+                <p class="text-sm mb-4">Onu bul ve <b>ID numarasını</b> iste.</p>
+
+                <div class="input-group">
+                    <input type="number" id="verify-input" placeholder="ID Giriniz"
+                        class="text-center text-xl font-mono mb-2">
+                    <button id="btn-verify" class="btn-primary w-full shadow-lg">Tahmin Et</button>
+                </div>
+            </div>
+    </div>
+    </section>
+
+    <!-- SECTION: SUCCESS / COMPARISON -->
+    <section id="section-match-success" class="hidden">
+        <div class="success-icon animate-bounce">✨</div>
+        <h1 class="text-3xl font-black mb-2 text-white">EŞLEŞMEYİ BULDUNUZ!<br>TEBRİKLER!</h1>
+        <p class="mb-6 opacity-70">İşte birbirinize verdiğiniz cevaplar:</p>
+
+        <div class="table-container">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40%">Soru</th>
+                        <th style="width: 25%">Sen</th>
+                        <th style="width: 25%">Partner</th>
+                        <th style="width: 10%">Durum</th>
+                    </tr>
+                </thead>
+                <tbody id="match-comparison-body">
+                    <!-- Rows Injected Here -->
+                </tbody>
+            </table>
+        </div>
+
+        <button onclick="location.reload()" class="btn-secondary mt-6">Çıkış Yap</button>
+    </section>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

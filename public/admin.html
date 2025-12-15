@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoDate Admin</title>
+    <style>
+        body {
+            background-color: #0f0f13;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #d946ef;
+        }
+
+        button {
+            background: #d946ef;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.5);
+            transition: transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #log {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+            height: 300px;
+            background: #1a1a20;
+            border: 1px solid #333;
+            padding: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>ADMIN CONTROL</h1>
+    <div id="stats" style="margin-bottom: 20px; font-size: 18px; color: #888;">
+        Users: <span id="user-count" style="color: #fff">...</span> |
+        Matches: <span id="match-count" style="color: #fff">...</span>
+    </div>
+    <hr style="width: 80%; border: 1px solid #333; margin: 30px 0;">
+
+    <div id="question-management" style="width: 80%; max-width: 800px;">
+        <h2>Question Management</h2>
+
+        <div style="background: #1a1a20; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3>Add / Edit Question</h3>
+            <form id="q-form" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="hidden" id="q-id">
+                <input type="text" id="q-short-id" placeholder="Short ID (e.g. 'fav_food')" required
+                    style="padding: 10px; background: #333; border: 1px solid #444; color: white;">
+                <input type="text" id="q-text" placeholder="Question Text" required
+                    style="padding: 10px; background: #333; border: 1px solid #444; color: white;">
+                <textarea id="q-options" placeholder="Options (comma separated, e.g. 'Pizza, Burger, Sushi')" required
+                    rows="3" style="padding: 10px; background: #333; border: 1px solid #444; color: white;"></textarea>
+                <input type="number" id="q-order" placeholder="Sort Order" value="0"
+                    style="padding: 10px; background: #333; border: 1px solid #444; color: white;">
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit"
+                        style="padding: 10px; font-size: 16px; flex: 1; background: #d946ef;">Save</button>
+                    <button type="button" onclick="resetForm()"
+                        style="padding: 10px; font-size: 16px; background: #555;">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="q-list" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Questions injected here -->
+        </div>
+    </div>
+
+    <script>
+        const log = document.getElementById('log');
+
+        function appendLog(msg) {
+            log.innerText += "\n" + msg;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Check if user opened file directly
+        if (window.location.protocol === 'file:') {
+            document.body.innerHTML = "<h1 style='color:red'>ERROR: ACCESS VIA LOCALHOST</h1><p>You opened this file directly. You must access it via <b>http://localhost:3000/admin.html</b></p>";
+            throw new Error("Wrong protocol");
+        }
+
+        async function fetchStats() {
+            try {
+                const res = await fetch('/api/stats').then(r => {
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    return r.json();
+                });
+                document.getElementById('user-count').innerText = res.users;
+                document.getElementById('match-count').innerText = res.matches;
+                document.getElementById('stats').style.color = "#0f0"; // Green if active
+            } catch (e) {
+                document.getElementById('stats').style.color = "red";
+                appendLog("Stats Fetch Error: " + e.message);
+            }
+        }
+
+        async function triggerBatch() {
+            const btn = document.querySelector('button'); // Note: this selects the first button (Batch Match)
+
+            btn.disabled = true;
+            btn.innerText = "PROCESSING...";
+            appendLog("Sending Batch Match Request...");
+
+            try {
+                const response = await fetch('/api/batch-match', { method: 'POST' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const res = await response.json();
+
+                if (res.success) {
+                    appendLog("SUCCESS: " + res.count + " matches made.");
+                    appendLog(JSON.stringify(res.matches, null, 2));
+                    fetchStats(); // Update counts immediately
+                } else {
+                    appendLog("SERVER ERROR: " + res.message);
+                }
+            } catch (e) {
+                appendLog("NETWORK/FETCH ERROR: " + e.message);
+            }
+
+            btn.disabled = false;
+            btn.innerText = "TRIGGER BATCH MATCH";
+        }
+
+        // --- QUESTION MANAGEMENT ---
+        const qForm = document.getElementById('q-form');
+        let questions = [];
+
+        async function fetchQuestions() {
+            try {
+                questions = await fetch('/api/questions').then(r => r.json());
+                renderQuestions();
+            } catch (e) {
+                appendLog("Fetch Questions Error: " + e.message);
+            }
+        }
+
+        function renderQuestions() {
+            const list = document.getElementById('q-list');
+            list.innerHTML = "";
+            questions.forEach(q => {
+                const div = document.createElement('div');
+                div.style.background = "#2a2a30";
+                div.style.padding = "15px";
+                div.style.borderRadius = "8px";
+                div.style.display = "flex";
+                div.style.justifyContent = "space-between";
+                div.style.alignItems = "center";
+
+                div.innerHTML = `
+            <div>
+                <strong style="color: #d946ef;">[HEAD] ${q.short_id}</strong> (Order: ${q.sort_order})<br>
+                <span>${q.text}</span><br>
+                <small style="color: #888;">Options: ${q.options.join(', ')}</small>
+            </div>
+            <div style="display:flex; gap:5px;">
+                <button onclick="editQuestion(${q.id})" style="padding: 5px 10px; font-size: 14px; background: #444;">Edit</button>
+                <button onclick="deleteQuestion(${q.id})" style="padding: 5px 10px; font-size: 14px; background: #ef4444;">Delete</button>
+            </div>
+        `;
+                list.appendChild(div);
+            });
+        }
+
+        function editQuestion(id) {
+            const q = questions.find(x => x.id === id);
+            if (!q) return;
+
+            document.getElementById('q-id').value = q.id;
+            document.getElementById('q-short-id').value = q.short_id;
+            document.getElementById('q-text').value = q.text;
+            document.getElementById('q-options').value = q.options.join(', ');
+            document.getElementById('q-order').value = q.sort_order;
+        }
+
+        function resetForm() {
+            document.getElementById('q-id').value = "";
+            qForm.reset();
+        }
+
+        async function deleteQuestion(id) {
+            if (!confirm("Are you sure?")) return;
+            try {
+                await fetch(`/api/admin/questions/${id}`, { method: 'DELETE' });
+                fetchQuestions();
+            } catch (e) {
+                alert(e.message);
+            }
+        }
+
+        qForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('q-id').value;
+            const payload = {
+                short_id: document.getElementById('q-short-id').value,
+                text: document.getElementById('q-text').value,
+                options: document.getElementById('q-options').value.split(',').map(s => s.trim()).filter(s => s),
+                sort_order: parseInt(document.getElementById('q-order').value)
+            };
+
+            const url = id ? `/api/admin/questions/${id}` : '/api/admin/questions';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                resetForm();
+                fetchQuestions();
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        // Init
+        appendLog("Connecting to server...");
+        fetchStats();
+        setInterval(fetchStats, 5000); // Poll every 5s
+        fetchQuestions();
+    </script>
+</body>
+
+</html>
