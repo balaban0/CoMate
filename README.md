@@ -45,7 +45,7 @@ CoDate uses a unique **Global Greedy Optimization** approach located in `/api/ba
 
 ## Getting Started
 
-Follow these steps to set up the project locally on your machine.
+These are the steps to set up the project locally on your machine.
 
 ### Prerequisites
 
