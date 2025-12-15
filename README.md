@@ -30,6 +30,19 @@ CoDate uses a unique **Global Greedy Optimization** approach located in `/api/ba
 * **Database:** SQLite (via `better-sqlite3`) for fast, zero-configuration storage.
 * **Utilities:** `cors` for middleware, `body-parser` for JSON handling.
 
+##  Project Structure
+```text
+/codate
+├── public/              
+│   ├── index.html       
+│   ├── admin.html       
+│   ├── style.css       
+│   └── app.js           
+├── server.js            
+├── package.json         
+└── CoDate.db            #Auto-Generated when server is run
+```
+
 ## Getting Started
 
 Follow these steps to set up the project locally on your machine.
@@ -43,8 +56,8 @@ Follow these steps to set up the project locally on your machine.
 
 1.  **Clone the repository**
     ```bash
-    git clone [https://github.com/yourusername/codate.git](https://github.com/yourusername/codate.git)
-    cd codate
+    git clone https://github.com/balaban0/CoDate.git
+    cd CoDate
     ```
 
 2.  **Install dependencies**
@@ -64,7 +77,6 @@ Follow these steps to set up the project locally on your machine.
     ```text
     http://localhost:3000
     ```
-
 ### How to run for a Party (Local Network)
 To let other people join from their phones while you host:
 
@@ -76,15 +88,25 @@ To let other people join from their phones while you host:
     ```text
     [http://192.168.1.15:3000](http://192.168.1.15:3000)
     ```
+    
+## Usage Guide
 
-##  Project Structure
-```text
-/codate
-├── public/              
-│   ├── index.html       
-│   ├── admin.html       
-│   ├── style.css       
-│   └── app.js           
-├── server.js            
-├── package.json         
-└── CoDate.db            #Auto-Generated when server is run
+### For the Host (Admin)
+1.  **Navigate to the Admin Panel**
+    Go to `/admin.html` (e.g., `http://localhost:3000/admin.html`).
+2.  **Seed Questions**
+    Ensure the question database is populated.
+3.  **Wait for Guests**
+    Let users register and answer questions via the main page.
+4.  **Trigger Match**
+    Click the "Batch Match" button when everyone is ready.
+
+### For Guests
+1.  **Visit the Main Page**
+    Open the app on your phone.
+2.  **Vibe Check**
+    Enter a Handle/Name and answer the "Vibe Check" questions.
+3.  **Wait for Results**
+    Wait for the host to announce that matches are ready.
+4.  **Find & Verify**
+    Find your partner in the room and enter their specific **Display ID** to verify the match!
