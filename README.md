@@ -21,7 +21,7 @@ CoDate uses a unique **Global Greedy Optimization** approach located in `/api/ba
     * The algorithm iterates through the list, locking in the highest-scoring pairs first.
     * Once a user is matched, they are removed from the pool to prevent double-booking.
 
-*Why this matters:* This method prioritizes the group's overall compatibility score, finding the best possible couples across the entire gathering.
+*Why Greedy Selection matters:* This method prioritizes the group's overall compatibility score, finding the best possible couples across the entire gathering.
 
 ##  Tech Stack
 
@@ -30,15 +30,63 @@ CoDate uses a unique **Global Greedy Optimization** approach located in `/api/ba
 * **Database:** SQLite (via `better-sqlite3`) for fast, zero-configuration storage.
 * **Utilities:** `cors` for middleware, `body-parser` for JSON handling.
 
-##  Project Structure
+## Getting Started
 
+Follow these steps to set up the project locally on your machine.
+
+### Prerequisites
+
+* **Node.js** (v14 or higher)
+* **npm** (This usually comes installed with Node.js)
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone [https://github.com/yourusername/codate.git](https://github.com/yourusername/codate.git)
+    cd codate
+    ```
+
+2.  **Install dependencies**
+    This will install all required packages listed in `package.json` (like `express` and `better-sqlite3`).
+    ```bash
+    npm install
+    ```
+
+3.  **Start the server**
+    ```bash
+    node server.js
+    ```
+    *Note: On the first run, the application will automatically create the `CoDate.db` database file and populate it with default questions.*
+
+4.  **Access the App**
+    Open your browser and navigate to:
+    ```text
+    http://localhost:3000
+    ```
+
+### How to run for a Party (Local Network)
+To let other people join from their phones while you host:
+
+1.  Connect your computer and the phones to the **same Wi-Fi network**.
+2.  Find your computer's **Local IP Address**:
+    * **Windows:** Open Command Prompt and type `ipconfig`. Look for "IPv4 Address" (e.g., `192.168.1.15`).
+    * **Mac/Linux:** Open Terminal and type `ifconfig` (or `ip a`). Look for `inet` under `en0` or `wlan0`.
+3.  Tell your guests to visit that IP address with the port number:
+    ```text
+    [http://192.168.1.15:3000](http://192.168.1.15:3000)
+    ```
+
+##  Project Structure
 ```text
 /codate
-├── public/              # Frontend files
-│   ├── index.html       # User Entry Point
-│   ├── admin.html       # Admin Control Panel
-│   ├── style.css        # Main Styles
-│   └── app.js           # Client-side Logic
-├── server.js            # Main Backend & API Logic
-├── package.json         # Dependencies
-└── CoDate.db            # SQLite Database (Auto-generated)
+├── public/              
+│   ├── index.html       
+│   ├── admin.html       
+│   ├── style.css       
+│   └── app.js           
+├── server.js            
+├── package.json         
+└── CoDate.db            #Auto-Generated
+
+##  
