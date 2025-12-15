@@ -7,15 +7,15 @@ CoDate is an interactive web application designed to break the ice at parties an
 
 > **The Concept:** Users answer a set of personality questions and are algorithmically matched with other guests. The goal is to encourage attendees to mingle, converse, and find their "hidden matches" before the results are revealed at the end of the event.
 
-## ✨ Features
+##  Features
 
-* **⚡️ Real-Time Questionnaire:** Dynamic, engaging questions rendered instantly for guests.
-* **🧠 Global Greedy Optimization:** A custom algorithm that ensures the highest "global happiness" for the group rather than just individual matches.
-* **🔐 Verification System:** Users verify their match by exchanging unique IDs/Code Names in real life.
-* **📱 Mobile-First Design:** Responsive UI designed to be used on phones while mingling.
-* **⚙️ Admin Dashboard:** Tools for the host to manage questions, trigger the batch matching process, and reset the event.
+* ** Real-Time Questionnaire:** Dynamic, engaging questions rendered instantly for guests.
+* ** Global Greedy Optimization:** A custom algorithm that ensures the highest "global happiness" for the group rather than just individual matches.
+* ** Verification System:** Users verify their match by exchanging unique IDs/Code Names in real life.
+* ** Mobile-First Design:** Responsive UI designed to be used on phones while mingling.
+* ** Admin Dashboard:** Tools for the host to manage questions, trigger the batch matching process, and reset the event.
 
-## 🧠 The Matching Algorithm
+##  The Matching Algorithm
 
 CoDate uses a unique **Global Greedy Optimization** approach located in `/api/batch-match` to ensure fair and high-quality pairs.
 
@@ -29,14 +29,14 @@ CoDate uses a unique **Global Greedy Optimization** approach located in `/api/ba
 
 *Why this matters:* This method prioritizes the group's overall compatibility score, finding the best possible couples across the entire gathering.
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 * **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES6+)
 * **Backend:** Node.js, Express.js
 * **Database:** SQLite (via `better-sqlite3`) for fast, zero-configuration storage.
 * **Utilities:** `cors` for middleware, `body-parser` for JSON handling.
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 /codate
