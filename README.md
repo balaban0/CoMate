@@ -1,11 +1,4 @@
-# CoDate
-CoDate is an interactive web application designed to break the ice at parties and gatherings. Users answer a set of personality or preference questions and are algorithmically matched with other guests. The goal is to encourage attendees to mingle, converse, and find their "hidden matches" before the results are revealed at the end of the event. CoDate creates an environment where conversations start easier, boosting the general morale of the gathering.
-
-# CoDate 🥂
-
-**CoDate** is an interactive web application designed to break the ice at parties and gatherings.
-
-> **The Concept:** Users answer a set of personality questions and are algorithmically matched with other guests. The goal is to encourage attendees to mingle, converse, and find their "hidden matches" before the results are revealed at the end of the event.
+**CoDate** is an interactive web application designed to break the ice at parties and gatherings. Users answer a set of personality or preference questions and are algorithmically matched with other guests. The goal is to encourage attendees to mingle, converse, and find their "hidden matches" before the results are revealed at the end of the event. CoDate creates an environment where conversations start easier, boosting the general morale of the gathering.
 
 ##  Features
 
