@@ -1,5 +1,5 @@
-##  CoDate
-**CoDate** is an interactive web application designed to break the ice at parties and gatherings. Users answer a set of personality or preference questions and are algorithmically matched with other guests. The goal is to encourage attendees to mingle, converse, and find their "hidden matches" before the results are revealed at the end of the event. CoDate creates an environment where conversations start easier, boosting the general morale of the gathering.
+##  CoMate
+**CoMate** is an interactive web application designed to break the ice at parties and gatherings. Users answer a set of personality or preference questions and are algorithmically matched with other guests. The goal is to encourage attendees to mingle, converse, and find their "hidden matches" before the results are revealed at the end of the event. CoDate creates an environment where conversations start easier, boosting the general morale of the gathering.
 
 ##  Features
 
@@ -11,7 +11,7 @@
 
 ##  The Matching Algorithm
 
-CoDate uses a unique **Global Greedy Optimization** approach located in `/api/batch-match` to ensure fair and high-quality pairs.
+CoMate uses a unique **Global Greedy Optimization** approach located in `/api/batch-match` to ensure fair and high-quality pairs.
 
 1.  **Candidate Selection:** The system fetches all currently unmatched users.
 2.  **Compatibility Matrix:** It performs a pairwise comparison of every user against every other user.
@@ -40,7 +40,7 @@ CoDate uses a unique **Global Greedy Optimization** approach located in `/api/ba
 │   └── app.js           
 ├── server.js            
 ├── package.json         
-└── CoDate.db            #Auto-Generated when server is run
+└── CoMate.db            #Auto-Generated when server is run
 ```
 
 ## Getting Started
@@ -56,7 +56,7 @@ These are the steps to set up the project locally on your machine.
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/balaban0/CoDate.git
+    git clone https://github.com/balaban0/CoMate.git
     cd CoDate
     ```
 
@@ -70,7 +70,7 @@ These are the steps to set up the project locally on your machine.
     ```bash
     node server.js
     ```
-    *Note: On the first run, the application will automatically create the `CoDate.db` database file and populate it with default questions.*
+    *Note: On the first run, the application will automatically create the `CoMate.db` database file and populate it with default questions.*
 
 4.  **Access the App**
     Open your browser and navigate to:
