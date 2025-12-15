@@ -3,11 +3,11 @@
 
 ##  Features
 
-* ** Real-Time Questionnaire:** Dynamic, engaging questions rendered instantly for guests.
-* ** Global Greedy Optimization:** A custom algorithm that ensures the highest "global happiness" for the group rather than just individual matches.
-* ** Verification System:** Users verify their match by exchanging unique IDs/Code Names in real life.
-* ** Mobile-First Design:** Responsive UI designed to be used on phones while mingling.
-* ** Admin Dashboard:** Tools for the host to manage questions, trigger the batch matching process, and reset the event.
+* **Real-Time Questionnaire:** Dynamic, engaging questions rendered instantly for guests.
+* **Global Greedy Optimization:** A custom algorithm that ensures the highest "global happiness" for the group rather than just individual matches.
+* **Verification System:** Users verify their match by exchanging unique IDs/Code Names in real life.
+* **Mobile-First Design:** Responsive UI designed to be used on phones while mingling.
+* **Admin Dashboard:** Tools for the host to manage questions, trigger the batch matching process, and reset the event.
 
 ##  The Matching Algorithm
 
