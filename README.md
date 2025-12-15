@@ -87,6 +87,4 @@ To let other people join from their phones while you host:
 │   └── app.js           
 ├── server.js            
 ├── package.json         
-└── CoDate.db            #Auto-Generated
-
-##  
+└── CoDate.db            #Auto-Generated when server is run
