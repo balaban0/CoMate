@@ -1,5 +1,5 @@
 ##  CoMate
-**CoMate** is an interactive web application designed to break the ice at parties and gatherings. Users answer a set of personality or preference questions and are algorithmically matched with other guests. The goal is to encourage attendees to mingle, converse, and find their "hidden matches" before the results are revealed at the end of the event. CoDate creates an environment where conversations start easier, boosting the general morale of the gathering.
+**CoMate** is an interactive web application designed to break the ice at parties and gatherings. Users answer a set of personality or preference questions and are algorithmically matched with other guests. The goal is to encourage attendees to mingle, converse, and find their "hidden matches" before the results are revealed at the end of the event. CoMate creates an environment where conversations start easier, boosting the general morale of the gathering.
 
 ##  Features
 
@@ -32,7 +32,7 @@ CoMate uses a unique **Global Greedy Optimization** approach located in `/api/ba
 
 ##  Project Structure
 ```text
-/codate
+/CoMate
 ├── public/              
 │   ├── index.html       
 │   ├── admin.html       
