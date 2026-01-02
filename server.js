@@ -6,11 +6,11 @@ const path = require('path');
 
 const app = express();
 const port = 3000;
-const db = new Database('Codate.db');
+const db = new Database('CoMate.db');
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public')); 
+app.use(express.static('public'));
 
 // Initialize Schema
 db.exec(`
